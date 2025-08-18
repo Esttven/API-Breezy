@@ -1,0 +1,55 @@
+@URL = http://localhost:3000/api
+
+
+### Verificar si está corriendo la API
+GET {{URL}} HTTP/1.1
+
+### Obtener todos los profesores
+GET {{URL}}/profesores HTTP/1.1
+
+### Obtener un profesor por ID
+GET {{URL}}/profesores/id/6 HTTP/1.1
+
+### Crear un nuevo profesor
+POST {{URL}}/profesores HTTP/1.1
+Content-Type: application/json
+
+{
+    "nombre": "Eduardo",
+    "apellido": "Triviño",
+    "edad": 50,
+    "sueldo": 3000,
+    "cedula": "2300815396"
+}
+
+### Crear otro nuevo profesor
+POST {{URL}}/profesores HTTP/1.1
+Content-Type: application/json
+
+{
+    "nombre": "Jorge",
+    "apellido": "Vega",
+    "edad": 40,
+    "sueldo": 1000,
+    "cedula": "2300815395"
+}
+
+### Actualizar un profesor existente
+PUT {{URL}}/profesores/4 HTTP/1.1
+Content-Type: application/json
+
+{
+    "nombre": "Juan Carlos"
+}
+
+### Eliminar un profesor
+DELETE {{URL}}/profesores/4 HTTP/1.1
+
+### Obtener profesores por apellido
+GET {{URL}}/profesores/apellido/Vega HTTP/1.1
+
+### Obtener profesores por sueldo menor a $1500
+GET {{URL}}/profesores/sueldo HTTP/1.1
+
+###Obtener profesores por edad mayor a 35
+GET {{URL}}/profesores/edad HTTP/1.1

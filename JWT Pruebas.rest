@@ -1,0 +1,104 @@
+### Variables para testing JWT
+@baseUrl = http://localhost:3000/api
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkBlamVtcGxvLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NDI4MzM5OCwiZXhwIjoxNzU0ODg4MTk4fQ.2NnfoogN320vHAD95FNJlXgwV2ALfXKTw_z8YuVyX4E
+
+### Registro de usuario
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "email": "usuario@ejemplo.com",
+    "password": "123456",
+    "name": "Usuario de Prueba",
+    "role": "user"
+}
+
+### Registro de admin
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "email": "admin@ejemplo.com",
+    "password": "admin123",
+    "name": "Admin de Prueba",
+    "role": "admin"
+}
+
+### Inicio de sesión
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "usuario@ejemplo.com",
+    "password": "123456"
+}
+
+### Inicio de sesión admin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@ejemplo.com",
+    "password": "admin123"
+}
+
+
+### Obtener perfil (requiere token)
+GET {{baseUrl}}/auth/profile
+Authorization: Bearer {{authToken}}
+
+### Verificar token
+GET {{baseUrl}}/auth/verify
+Authorization: Bearer {{authToken}}
+
+### Actualizar perfil
+PUT {{baseUrl}}/auth/profile
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "name": "Nuevo Nombre"
+}
+
+### Cambiar contraseña
+PUT {{baseUrl}}/auth/change-password
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "currentPassword": "123456",
+    "newPassword": "nuevaPassword123"
+}
+
+### Crear profesor (solo admin)
+POST {{baseUrl}}/profesores
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "edad": 35,
+    "sueldo": 2500,
+    "cedula": "1234567680"
+}
+
+### Obtener todos los profesores (requiere autenticación)
+GET {{baseUrl}}/profesores
+Authorization: Bearer {{authToken}}
+
+### Obtener profesor por ID (público)
+GET {{baseUrl}}/profesores/id/1
+
+### Actualizar profesor (requiere autenticación)
+PUT {{baseUrl}}/profesores/1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "sueldo": 3000.00
+}
+
+### Eliminar profesor (requiere autenticación)
+DELETE {{baseUrl}}/profesores/1
+Authorization: Bearer {{authToken}}

@@ -1,0 +1,104 @@
+### Scoreboard API Test Endpoints
+
+### Base URL
+@baseUrl = http://localhost:3000/api
+
+### Registrar nuevo usuario
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser1",
+  "password": "password123"
+}
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "username": "testuser1",
+    "password": "password123"
+}
+
+### Get Profile (requires token from login)
+GET {{baseUrl}}/auth/profile
+Authorization: Bearer YOUR_TOKEN_HERE
+
+
+### Get Scoreboard (public)
+GET {{baseUrl}}/scoreboard
+
+###
+
+### Get Scoreboard with pagination
+GET {{baseUrl}}/scoreboard?limit=5&page=1
+
+###
+
+### Get My Stats (requires token)
+GET {{baseUrl}}/scoreboard/my-stats
+Authorization: Bearer YOUR_TOKEN_HERE
+
+###
+
+### Update Score (requires token)
+PUT {{baseUrl}}/scoreboard/update-score
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "score": 100
+}
+
+###
+
+### Update Daily Streak (requires token)
+PUT {{baseUrl}}/scoreboard/update-streak
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "dailyStreak": 3
+}
+
+###
+
+### Update Both Score and Streak (requires token)
+PUT {{baseUrl}}/scoreboard/update-stats
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "score": 250,
+  "dailyStreak": 5
+}
+
+###
+
+### Get User by Username (public)
+GET {{baseUrl}}/scoreboard/user/testuser1
+
+###
+
+### Change Password (requires token)
+PUT {{baseUrl}}/auth/change-password
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "currentPassword": "password123",
+  "newPassword": "newpassword456"
+}
+
+###
+
+### Verify Token (requires token)
+GET {{baseUrl}}/auth/verify
+Authorization: Bearer YOUR_TOKEN_HERE
+
+###
+
+### Refresh Token (requires token)
+POST {{baseUrl}}/auth/refresh
+Authorization: Bearer YOUR_TOKEN_HERE

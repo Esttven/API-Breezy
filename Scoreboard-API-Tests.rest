@@ -1,15 +1,15 @@
-### Scoreboard API Test Endpoints
-
-### Base URL
+### URL Base
 @baseUrl = http://localhost:3000/api
+### Token
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0dXNlcjEiLCJpYXQiOjE3NTU0ODk3NDksImV4cCI6MTc1NjA5NDU0OX0.gX_FBmd0P-atlNj9JbGZrdZyy9f6nwi2xp0pvAHMhxA
 
 ### Registrar nuevo usuario
 POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
-  "username": "testuser1",
-  "password": "password123"
+    "username": "testuser1",
+    "password": "password123"
 }
 
 ### Login
@@ -21,84 +21,66 @@ Content-Type: application/json
     "password": "password123"
 }
 
-### Get Profile (requires token from login)
+### Obtener perfil de usuario (requiere token)
 GET {{baseUrl}}/auth/profile
-Authorization: Bearer YOUR_TOKEN_HERE
+Authorization: Bearer {{token}}
 
 
-### Get Scoreboard (public)
+### Obtener scoreboard (público)
 GET {{baseUrl}}/scoreboard
 
-###
-
-### Get Scoreboard with pagination
+### Obtener scoreboard con paginación
 GET {{baseUrl}}/scoreboard?limit=5&page=1
 
-###
-
-### Get My Stats (requires token)
+### Obtener estadísticas del usuario (requiere token)
 GET {{baseUrl}}/scoreboard/my-stats
-Authorization: Bearer YOUR_TOKEN_HERE
+Authorization: Bearer {{token}}
 
-###
-
-### Update Score (requires token)
+### Actualizar puntuación (requiere token)
 PUT {{baseUrl}}/scoreboard/update-score
-Authorization: Bearer YOUR_TOKEN_HERE
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "score": 100
+    "score": 100
 }
 
-###
-
-### Update Daily Streak (requires token)
+### Actualizar racha diaria (requiere token)
 PUT {{baseUrl}}/scoreboard/update-streak
-Authorization: Bearer YOUR_TOKEN_HERE
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "dailyStreak": 3
+    "dailyStreak": 3
 }
 
-###
-
-### Update Both Score and Streak (requires token)
+### Actualizar estadísticas (requiere token)
 PUT {{baseUrl}}/scoreboard/update-stats
-Authorization: Bearer YOUR_TOKEN_HERE
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "score": 250,
-  "dailyStreak": 5
+    "score": 250,
+    "dailyStreak": 5
 }
 
-###
-
-### Get User by Username (public)
+### Obtener usuario por nombre de usuario (público)
 GET {{baseUrl}}/scoreboard/user/testuser1
 
-###
-
-### Change Password (requires token)
+### Cambiar contraseña (requiere token)
 PUT {{baseUrl}}/auth/change-password
-Authorization: Bearer YOUR_TOKEN_HERE
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "currentPassword": "password123",
-  "newPassword": "newpassword456"
+    "currentPassword": "password123",
+    "newPassword": "newpassword456"
 }
 
-###
-
-### Verify Token (requires token)
+### Verificar token (requiere token)
 GET {{baseUrl}}/auth/verify
-Authorization: Bearer YOUR_TOKEN_HERE
+Authorization: Bearer {{token}}
 
-###
-
-### Refresh Token (requires token)
+### Refrescar token (requiere token)
 POST {{baseUrl}}/auth/refresh
-Authorization: Bearer YOUR_TOKEN_HERE
+Authorization: Bearer {{token}}

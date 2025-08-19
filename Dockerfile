@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:24
 
 # Install necessary dependencies for Prisma and SQLite
 RUN apk add --no-cache openssl sqlite

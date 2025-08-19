@@ -7,10 +7,6 @@ RUN apk add --no-cache openssl sqlite
 # Create app directory
 WORKDIR /app
 
-# Create non-root user for security
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodejs -u 1001
-
 # Copy package files first for better Docker layer caching
 COPY package*.json ./
 
@@ -24,21 +20,14 @@ RUN npx prisma generate
 # Copy application code
 COPY . .
 
-# Create data directory and set proper permissions
-RUN mkdir -p /app/data && chown -R nodejs:nodejs /app
-
-# Switch to non-root user
-USER nodejs
+# Create data directory with proper permissions
+RUN mkdir -p /app/data && chmod 755 /app/data
 
 # Expose port (Railway will automatically assign PORT environment variable)
-EXPOSE $PORT
+EXPOSE 3000
 
 # Set environment variables
 ENV NODE_ENV=production
 
-# Health check for Railway
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "const http = require('http'); const options = { host: 'localhost', port: process.env.PORT || 3000, path: '/api/health', timeout: 2000 }; const req = http.request(options, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }); req.on('error', () => process.exit(1)); req.end();"
-
-# Start the application
+# Start the application with database initialization
 CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]

@@ -19,8 +19,14 @@ app.use(express.json());
 // Importar controladores dinámicamente
 const controllersPath = path.join(import.meta.dirname, 'controllers');
 
+console.log('Starting application...');
+console.log('Controllers path:', controllersPath);
+console.log('Database URL:', process.env.DATABASE_URL);
+console.log('JWT Secret configured:', !!process.env.JWT_SECRET);
+
 if (fs.existsSync(controllersPath)) {
     const controllerFiles = fs.readdirSync(controllersPath).filter(file => file.endsWith('.js'));
+    console.log('Found controllers:', controllerFiles);
 
     for (const file of controllerFiles) {
         try {
@@ -32,6 +38,7 @@ if (fs.existsSync(controllersPath)) {
             console.log(`✓ Controlador cargado: ${file}`);
         } catch (error) {
             console.error(`✗ Error cargando controlador ${file}:`, error.message);
+            console.error('Stack trace:', error.stack);
         }
     }
 } else {
@@ -44,13 +51,33 @@ app.get('/api', (req, res) => {
 });
 
 // Health check endpoint for Railway
-app.get('/api/health', (req, res) => {
-    res.status(200).json({ 
-        status: 'healthy', 
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        version: process.env.npm_package_version || '1.0.0'
-    });
+app.get('/api/health', async (req, res) => {
+    try {
+        // Test database connection
+        const { PrismaClient } = await import('./generated/prisma/index.js');
+        const prisma = new PrismaClient();
+        
+        // Simple query to test DB connectivity
+        await prisma.$queryRaw`SELECT 1`;
+        await prisma.$disconnect();
+        
+        res.status(200).json({ 
+            status: 'healthy', 
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+            version: process.env.npm_package_version || '1.0.0',
+            database: 'connected',
+            environment: process.env.NODE_ENV || 'development'
+        });
+    } catch (error) {
+        console.error('Health check failed:', error);
+        res.status(503).json({ 
+            status: 'unhealthy', 
+            timestamp: new Date().toISOString(),
+            error: error.message,
+            database: 'disconnected'
+        });
+    }
 });
 
 // Middleware para manejo de errores

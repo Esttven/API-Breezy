@@ -20,6 +20,9 @@ RUN npx prisma generate
 # Copy application code
 COPY . .
 
+# Make startup script executable
+RUN chmod +x /app/start-railway.sh
+
 # Create data directory with proper permissions
 RUN mkdir -p /app/data && chmod 755 /app/data
 
@@ -28,6 +31,7 @@ EXPOSE 3000
 
 # Set environment variables
 ENV NODE_ENV=production
+ENV DATABASE_URL="file:./data/database.db"
 
-# Start the application with database initialization
-CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]
+# Start the application with the startup script
+CMD ["/app/start-railway.sh"]

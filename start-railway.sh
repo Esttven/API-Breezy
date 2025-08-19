@@ -22,11 +22,12 @@ npx prisma generate
 # Test database connection
 echo "🔍 Testing database connection..."
 node -e "
-const { PrismaClient } = require('./generated/prisma/index.js');
-const prisma = new PrismaClient();
-prisma.\$queryRaw\`SELECT 1\`.then(() => {
-  console.log('✅ Database connection successful');
-  prisma.\$disconnect();
+import('./generated/prisma/index.js').then(({ PrismaClient }) => {
+  const prisma = new PrismaClient();
+  return prisma.\$queryRaw\`SELECT 1\`.then(() => {
+    console.log('✅ Database connection successful');
+    return prisma.\$disconnect();
+  });
 }).catch(err => {
   console.error('❌ Database connection failed:', err);
   process.exit(1);

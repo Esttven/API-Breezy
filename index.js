@@ -84,10 +84,10 @@ app.get('/api/health', async (req, res) => {
 app.use(errorHandler);
 
 // Iniciar el servidor
-const server = app.listen(PORT, () => {
-    console.log(`Backend ejecutándose en http://localhost:${PORT}`);
+const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Backend ejecutándose en http://0.0.0.0:${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV}`);
-    console.log(`Health check disponible en: http://localhost:${PORT}/api/health`);
+    console.log(`Health check disponible en: http://0.0.0.0:${PORT}/api/health`);
 });
 
 // Manejar promesas no capturadas

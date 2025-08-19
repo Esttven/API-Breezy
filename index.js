@@ -43,7 +43,7 @@ app.get('/api', (req, res) => {
     res.json({ message: 'API funcionando correctamente' });
 });
 
-// Health check endpoint for Oracle Cloud load balancer
+// Health check endpoint for Railway
 app.get('/api/health', (req, res) => {
     res.status(200).json({ 
         status: 'healthy', 

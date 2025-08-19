@@ -1,7 +1,7 @@
-# Use Node.js 18 LTS Alpine with explicit platform support for Oracle Cloud ARM
-FROM --platform=linux/arm64 node:18-alpine
+# Use Node.js 18 LTS Alpine for Railway deployment
+FROM node:18-alpine
 
-# Install necessary dependencies for Prisma and SQLite on ARM64
+# Install necessary dependencies for Prisma and SQLite
 RUN apk add --no-cache openssl sqlite
 
 # Create app directory
@@ -14,10 +14,10 @@ RUN adduser -S nodejs -u 1001
 # Copy package files first for better Docker layer caching
 COPY package*.json ./
 
-# Install dependencies with ARM64 optimization
+# Install dependencies
 RUN npm ci --only=production && npm cache clean --force
 
-# Copy Prisma schema and generate client for ARM64
+# Copy Prisma schema and generate client
 COPY prisma ./prisma/
 RUN npx prisma generate
 
@@ -30,14 +30,13 @@ RUN mkdir -p /app/data && chown -R nodejs:nodejs /app
 # Switch to non-root user
 USER nodejs
 
-# Expose port (Oracle Cloud typically uses port 3000 or configurable)
-EXPOSE 3000
+# Expose port (Railway will automatically assign PORT environment variable)
+EXPOSE $PORT
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV PORT=3000
 
-# Health check for Oracle Cloud load balancer
+# Health check for Railway
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "const http = require('http'); const options = { host: 'localhost', port: process.env.PORT || 3000, path: '/api/health', timeout: 2000 }; const req = http.request(options, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }); req.on('error', () => process.exit(1)); req.end();"
 

@@ -1,0 +1,17 @@
+[variables]
+NODE_ENV = "production"
+
+[phases.setup]
+nixPkgs = ["nodejs_18", "npm"]
+
+[phases.build]
+cmds = [
+  "npm ci --only=production",
+  "npx prisma generate"
+]
+
+[phases.deploy]
+cmd = "npm start"
+
+[start]
+cmd = "npm start"

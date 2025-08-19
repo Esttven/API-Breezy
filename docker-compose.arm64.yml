@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      platforms:
+        - linux/arm64
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=file:./data/database.db
+      - JWT_SECRET=${JWT_SECRET:-your-super-secure-jwt-secret-key-change-in-production}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-7d}
+      - PORT=${PORT:-3000}
+      - NODE_ENV=production
+      - CORS_ORIGIN=${CORS_ORIGIN:-*}
+    volumes:
+      - api_data:/app/data
+    restart: unless-stopped
+    # Resource limits optimized for Oracle Cloud ARM instances
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'  # ARM instances can handle more CPU
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    # Health check compatible with ARM64
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    platform: linux/arm64
+
+volumes:
+  api_data:
+    driver: local

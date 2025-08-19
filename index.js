@@ -43,9 +43,56 @@ app.get('/api', (req, res) => {
     res.json({ message: 'API funcionando correctamente' });
 });
 
-// Iniciar servidor
-app.listen(PORT, () => {
-    console.log(`Backend ejecutándose en http://localhost:${PORT}`);
+// Health check endpoint for Oracle Cloud load balancer
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'healthy', 
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        version: process.env.npm_package_version || '1.0.0'
+    });
+});
+
+// Middleware para manejo de errores
+app.use(errorHandler);
+
+// Iniciar el servidor
+const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Backend ejecutándose en http://0.0.0.0:${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV}`);
+    console.log(`Health check disponible en: http://0.0.0.0:${PORT}/api/health`);
+});
+
+// Manejar promesas no capturadas
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    server.close(() => {
+        process.exit(1);
+    });
+});
+
+// Manejar errores no capturados
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error);
+    process.exit(1);
+});
+
+// Cierre en SIGTERN (para Docker)
+process.on('SIGTERM', () => {
+    console.log('SIGTERM received. Shutting down gracefully...');
+    server.close(() => {
+        console.log('Process terminated');
+        process.exit(0);
+    });
+});
+
+// Cierre en SIGINT (Ctrl+C)
+process.on('SIGINT', () => {
+    console.log('SIGINT received. Shutting down gracefully...');
+    server.close(() => {
+        console.log('Process terminated');
+        process.exit(0);
+    });
 });
 
 // Manejo de errores

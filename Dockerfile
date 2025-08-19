@@ -1,7 +1,7 @@
 FROM node:24
 
 # Install necessary dependencies for Prisma and SQLite
-RUN apk add --no-cache openssl sqlite
+RUN apt-get update && apt-get install -y openssl sqlite3 && rm -rf /var/lib/apt/lists/*
 
 # Create app directory
 WORKDIR /app
